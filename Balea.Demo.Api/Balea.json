@@ -1,0 +1,25 @@
+{
+  "Balea": {
+    "applications": [
+      {
+        "name": "default",
+        "roles": [
+          {
+            "name": "admin",
+            "desscription": "Role for admin",
+            "enabled": true,
+            "permissions": [
+              "plan.edit",
+              "plan.create",
+              "plan.delete",
+              "plan.view"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "api"
+      }
+    ]
+  }
+}

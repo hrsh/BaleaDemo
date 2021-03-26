@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -18,9 +19,26 @@ namespace Balea.Demo.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
-            services.AddRazorPages();
+            services.AddBalea(a =>
+            {
+                a.SetApplicationName("default");
+            })
+            .AddConfigurationStore(_configuration)
+            .Services
+            .AddAuthentication(cfg =>
+            {
+                cfg.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                cfg.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, cfg =>
+            {
+                cfg.LoginPath = "/account/u/login";
+                cfg.AccessDeniedPath = "/account/forbid";
+            })
+            .Services
+            .AddControllers()
+            .Services
+            .AddControllersWithViews();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -30,13 +48,15 @@ namespace Balea.Demo.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseAuthentication();
+            app.UseStaticFiles();
             app.UseRouting();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
-                endpoints.MapRazorPages();
             });
         }
     }

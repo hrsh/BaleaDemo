@@ -1,5 +1,6 @@
 using Figgle;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
@@ -32,6 +33,10 @@ namespace Balea.Demo.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureAppConfiguration(builder =>
+                {
+                    builder.AddJsonFile("Balea.json", false, true);
                 });
     }
 }
